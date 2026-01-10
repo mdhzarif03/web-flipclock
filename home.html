@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>web-flipclock</title>
+
+    <link rel="shortcut icon" href="./doc/favicon.ico">
+    <link href="https://cdn.bootcss.com/flipclock/0.7.8/flipclock.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/flipclock/0.7.8/flipclock.min.js"></script>
+
+    <style>
+        body {
+            background-color: #222;
+            overflow: hidden;
+            margin: 0;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .settings-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            text-align: right;
+        }
+
+        #gear-icon {
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.4;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        #gear-icon:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+
+        .theme-menu {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .theme-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .theme-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-menu span {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+
+        .main-content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .date-display {
+            font-size: 24px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            width: 100%;
+        }
+
+        .clock-container {
+            transform-origin: center;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .flip-clock-wrapper {
+            margin: 0 !important;
+            display: inline-block !important;
+            width: auto !important;
+        }
+
+        #scaler {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+
+        .hide { opacity: 0; transition: 0.3s; }
+    </style>
+</head>
+
+<body>
+
+    <div class="settings-container">
+        <i id="gear-icon" class="fas fa-cog"></i>
+        <div id="menu" class="theme-menu">
+            <span>Switch Theme</span>
+            <a href="theme_1.html">Studio Edition</a>
+            <a href="theme_2.html">Obsidian Glass</a>
+            <a href="theme_3.html">Gallery Walnut</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="date" class="date-display"></div>
+
+        <div class="clock-container">
+            <div class="clock"></div>
+        </div>
+
+        <input id="scaler" class="hide" type="range" min="0.5" max="2.3" step="0.1">
+    </div>
+
+    <script>
+        var clock;
+
+        function updateDate() {
+            var now = new Date();
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            $('#date').text(now.toLocaleDateString(undefined, options));
+        }
+
+        $(document).ready(function () {
+            // Initialize FlipClock
+            clock = $('.clock').FlipClock({
+                clockFace: 'TwentyFourHourClock'
+            });
+
+            updateDate();
+            setInterval(updateDate, 60000);
+
+            // Toggle Theme Menu
+            $('#gear-icon').click(function() {
+                $('#menu').fadeToggle(200);
+            });
+
+            $(document).click(function(event) { 
+                if(!$(event.target).closest('.settings-container').length) {
+                    if($('#menu').is(":visible")) {
+                        $('#menu').fadeOut(200);
+                    }
+                }        
+            });
+
+            // Fullscreen toggle
+            $('body').dblclick(function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            });
+
+            // Scaling logic
+            function applyScale() {
+                var scale = $('#scaler').val();
+                $('.clock-container').css('transform', 'scale(' + scale + ')');
+            }
+
+            function adjust() {
+                var width = $(window).width();
+                var scaleVal = (width < 520) ? (width / 520) : (width < 992) ? 1.4 : 1.8;
+                $('#scaler').val(scaleVal);
+                applyScale();
+            }
+
+            $(window).resize(adjust);
+            adjust();
+        });
+    </script>
+</body>
+</html>
