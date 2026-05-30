@@ -1,0 +1,104 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>web-flipclock</title>
+
+	<link rel="shortcut icon" href="./doc/favicon.ico">
+	<link href="https://cdn.bootcss.com/flipclock/0.7.8/flipclock.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/flipclock/0.7.8/flipclock.min.js"></script>
+
+	<style>
+		body{
+			background:#222;
+			overflow:hidden;
+			margin:0;
+			font-family: Arial;
+		}
+
+		.clock{
+			width:460px;
+			margin:auto;
+			position:relative;
+			top:25vh;
+			transform: scale(1);
+		}
+
+		.menu{
+			position:fixed;
+			top:10px;
+			left:10px;
+			z-index:999;
+		}
+
+		.menu a{
+			display:block;
+			color:white;
+			padding:6px 10px;
+			text-decoration:none;
+			background:#444;
+			margin-bottom:5px;
+			border-radius:5px;
+			font-size:14px;
+		}
+
+		.menu a:hover{
+			background:#666;
+		}
+
+		.info{
+			position:fixed;
+			bottom:10px;
+			left:10px;
+			color:white;
+			font-size:12px;
+			opacity:0.6;
+		}
+	</style>
+</head>
+
+<body>
+
+<!-- 🔗 THEME LINKS -->
+<div class="menu">
+	<a href="index.html">Theme Default</a>
+	<a href="theme_1.html">Theme 1</a>
+	<a href="theme_2.html">Theme 2</a>
+	<a href="theme_3.html">Theme 3</a>
+</div>
+
+<div class="clock"></div>
+
+<div class="info">
+	Double click = fullscreen | Click clock = show/hide UI
+</div>
+
+<script>
+var clock;
+
+$(document).ready(function() {
+
+	clock = $('.clock').FlipClock({
+		clockFace: 'TwentyFourHourClock'
+	});
+
+	// fullscreen toggle
+	let fullscreen = false;
+
+	$("body").dblclick(function (){
+		let docElm = document.documentElement;
+
+		if(!fullscreen){
+			docElm.requestFullscreen?.();
+			fullscreen = true;
+		}else{
+			document.exitFullscreen?.();
+			fullscreen = false;
+		}
+	});
+
+});
+</script>
+
+</body>
+</html>
